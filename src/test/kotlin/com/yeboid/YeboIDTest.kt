@@ -26,7 +26,7 @@ class YeboIDTest {
     }
     private fun metadata() = JSONObject("""{"issuer":"https://api.yeboid.com","authorization_endpoint":"https://yeboid.com/oauth/authorize","token_endpoint":"https://api.yeboid.com/oauth/token","userinfo_endpoint":"https://api.yeboid.com/oauth/userinfo","revocation_endpoint":"https://api.yeboid.com/oauth/revoke","jwks_uri":"https://api.yeboid.com/.well-known/jwks.json","response_types_supported":["code"],"subject_types_supported":["public"],"id_token_signing_alg_values_supported":["RS256"],"scopes_supported":["openid","profile","offline_access"],"code_challenge_methods_supported":["S256"]}""")
     private fun registration() = JSONObject("""{"client_id":"app","redirect_uris":["com.example://callback"],"scopes":["openid","profile","offline_access"]}""")
-    @Test fun pendingPKCEIsEncryptedByStoreAndWrongStateFailsBeforeExchange() = runBlocking {
+    @Test fun pendingPKCEUsesStoreAndWrongStateFailsBeforeExchange() = runBlocking {
         val memory = Memory()
         val client = YeboID(RuntimeEnvironment.getApplication(), "app", Uri.parse("com.example://callback"), store = memory,
             http = { url, _, _ -> if (url.endsWith("/configuration")) registration() else metadata() })
@@ -63,6 +63,17 @@ class YeboIDTest {
             http = { url, _, _ -> if (url.endsWith("openid-configuration")) metadata() else throw YeboIDException("offline") })
         try { client.signOut(); fail("outage must throw") } catch (e: YeboIDException) { assertEquals("offline", e.code) }
         assertNotNull(memory.values["tokens"])
+        client.close()
+    }
+    @Test fun registrationRejectsWrongCallbackAndMissingScopes() = runBlocking {
+        var response = registration().put("redirect_uris", org.json.JSONArray(listOf("wrong://callback")))
+        val client = YeboID(RuntimeEnvironment.getApplication(), "app", Uri.parse("com.example://callback"), store = Memory(),
+            http = { _, _, _ -> response })
+        try { client.checkRegistration(); fail("wrong callback must fail") }
+        catch (e: YeboIDException) { assertEquals("invalid_registration", e.code) }
+        response = registration().put("scopes", org.json.JSONArray(listOf("openid")))
+        try { client.checkRegistration(); fail("missing scope must fail") }
+        catch (e: YeboIDException) { assertEquals("invalid_scope", e.code) }
         client.close()
     }
 }
