@@ -1,0 +1,9 @@
+# YeboID Kotlin / Android
+
+Read AGENTS.md and README.md in this repository.
+
+- Platform selection: https://docs.yeboid.com/platforms
+- Agent guide: https://docs.yeboid.com/ai-agents
+- Machine-readable SDK catalog: https://docs.yeboid.com/sdk-manifest.json
+
+Use AppAuth Custom Tabs, ActivityResultContracts.StartActivityForResult and Android Keystore. Keep one YeboID instance; complete/cancel each pending sign-in. Exclude encrypted preferences from cloud and device backup. Never run Flutter or build an APK unless the human explicitly asks. assembleRelease builds an Android library AAR.
