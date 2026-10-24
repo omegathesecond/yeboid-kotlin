@@ -4,7 +4,7 @@ plugins {
     id("maven-publish")
 }
 group = "com.yeboid"
-version = "0.1.0"
+version = "0.1.1"
 android {
     namespace = "com.yeboid"
     compileSdk = 35

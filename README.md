@@ -5,7 +5,7 @@ An Android library using [AppAuth](https://github.com/openid/AppAuth-Android) Cu
 ## Install from source
 
 ```sh
-git clone --branch v0.1.0 https://github.com/omegathesecond/yeboid-kotlin.git
+git clone --branch v0.1.1 https://github.com/omegathesecond/yeboid-kotlin.git
 ```
 
 In your Android app's `settings.gradle.kts`, include the adjacent checkout:
@@ -18,7 +18,7 @@ In your app module:
 
 ```kotlin
 dependencies {
-    implementation("com.yeboid:yeboid-android:0.1.0")
+    implementation("com.yeboid:yeboid-android:0.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 }
 android.defaultConfig.manifestPlaceholders["appAuthRedirectScheme"] = "com.yourcompany.yourapp"
